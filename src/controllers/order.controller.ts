@@ -31,6 +31,18 @@ export const createPayment = async (
     }
     const userId = req.user._id;
 
+    const existingSub = await Subscription.findOne({
+      userId,
+      status: "success",
+    }).sort({ createdAt: -1 });
+
+    if (existingSub?.endDate && existingSub.endDate > new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: "You already have an active subscription",
+      });
+    }
+
     if (!currency) {
       currency = "INR";
     }
