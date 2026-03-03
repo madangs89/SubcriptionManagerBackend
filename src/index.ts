@@ -8,6 +8,7 @@ import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
 import subScriptionRouter from "./routes/subcription.routes.js";
 import orderRouter from "./routes/order.routes.js";
+import { rateLimit } from "express-rate-limit";
 
 const app = express();
 
@@ -21,10 +22,18 @@ app.use(
   }),
 );
 
-app.use("/api/v1/auth", authRouter);
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  ipv6Subnet: 56, // Set to 60 or 64 to be less aggressive, or 52 or 48 to be more aggressive
+});
+
+app.use("/api/v1/auth", limiter, authRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/subcription", subScriptionRouter);
-app.use("/api/v1/payment", orderRouter);
+app.use("/api/v1/payment", limiter, orderRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");
