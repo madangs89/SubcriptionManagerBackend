@@ -89,7 +89,7 @@ export const cancelSubscription = async (
 
     const existingSub = await Subscription.findOne({
       userId,
-      status: "active",
+      status: "success",
     }).sort({ createdAt: -1 });
     if (!existingSub) {
       return res.status(404).json({

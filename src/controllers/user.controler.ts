@@ -51,7 +51,7 @@ export const getAllSubscribedUsersForAdmin = async (
 ) => {
   try {
     const allActiveSubscribedUsers = await Subscription.find({
-      status: "active",
+      status: "success",
       endDate: { $gt: new Date() },
     })
       .populate("userId", "-password")

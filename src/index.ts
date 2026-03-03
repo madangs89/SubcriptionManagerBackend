@@ -5,6 +5,9 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { connectToDataBase } from "./DbConnect/Connect.js";
 import authRouter from "./routes/auth.routes.js";
+import userRouter from "./routes/user.routes.js";
+import subScriptionRouter from "./routes/subcription.routes.js";
+import orderRouter from "./routes/order.routes.js";
 
 const app = express();
 
@@ -18,8 +21,10 @@ app.use(
   }),
 );
 
-
-app.use("/api/v1/auth" , authRouter)
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/subcription", subScriptionRouter);
+app.use("/api/v1/payment", orderRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");

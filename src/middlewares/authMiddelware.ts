@@ -38,21 +38,17 @@ export const adminMiddelware = (
   next: NextFunction,
 ) => {
   try {
-    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
-
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized", success: false });
+    const decode = req.user;
+    if (!decode) {
+      return res
+        .status(400)
+        .json({ message: "User not found", success: false });
     }
-
-    const decode = jwt.verify(
-      token,
-      config.JWT_SECRET_KEY as string,
-    ) as JwtPayload;
 
     if (decode.role !== "admin") {
       return res.status(403).json({ message: "Forbidden", success: false });
     }
-    req.user = decode;
+
     next();
   } catch (error) {
     if (error instanceof Error) {
@@ -69,16 +65,13 @@ export const subscriptionMiddelware = async (
   next: NextFunction,
 ) => {
   try {
-    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+    const decode = req.user;
 
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized", success: false });
+    if (!decode) {
+      return res
+        .status(400)
+        .json({ message: "User not found", success: false });
     }
-
-    const decode = jwt.verify(
-      token,
-      config.JWT_SECRET_KEY as string,
-    ) as JwtPayload;
 
     const { _id } = decode;
 
@@ -108,8 +101,6 @@ export const subscriptionMiddelware = async (
         subscription: null,
       });
     }
-
-    req.user = decode;
     next();
   } catch (error) {
     if (error instanceof Error) {
