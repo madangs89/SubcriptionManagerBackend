@@ -160,3 +160,6 @@ export const getProfitForAdmin = async (req: AuthMiddleWare, res: Response) => {
       .json({ message: "Internal Server Error", success: false });
   }
 };
+
+
+
